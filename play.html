@@ -1,0 +1,70 @@
+<body></body>
+<script>
+
+var list = prompt();
+
+var script = document.createElement("script");
+script.src = "lists/" + list + ".js";
+document.body.appendChild(script);
+script.onload = function() {
+
+	var audio = new Audio();
+
+	var remaining = [];
+
+	function removeSpaces(str) {
+		return str.replace(/\s+/g, "");
+	}
+
+	function next() {
+		if (remaining.length == 0) {
+			for (var i = 0; i < songs.length; i++) {
+				remaining.push(songs[i]);
+			}
+		}
+		var index = Math.floor(Math.random() * remaining.length);
+		var currentSong = remaining[index];
+		audio.src = "files/" + list + "/"
+			+ removeSpaces(currentSong.name) + "-"
+			+ removeSpaces(currentSong.artist) + ".mp3";
+		audio.play();
+		document.body.innerHTML = currentSong.name + ", " + currentSong.artist;
+		remaining.splice(index, 1);
+	}
+
+	var volumeChange = 0.01;
+	audio.volume = 0.2;
+	next();
+
+	audio.onended = next;
+
+	window.onkeydown = function(event) {
+		var key = (event || window.event).keyCode;
+		if (key == 32) {
+			if (audio.paused) {
+				audio.play();
+			}
+			else {
+				audio.pause();
+			}
+		}
+		else if (key == 38) {
+			audio.volume += volumeChange;
+			if (audio.volume > 1) {
+				audio.volume = 1;
+			}
+		}
+		else if (key == 40) {
+			audio.volume -= volumeChange;
+			if (audio.volume < 0) {
+				audio.volume = 0;
+			}
+		}
+		else if (key == 80) { //p
+			next();
+		}
+	};
+
+}
+
+</script>
