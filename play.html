@@ -24,7 +24,7 @@ script.onload = function() {
 		}
 		var index = Math.floor(Math.random() * remaining.length);
 		var currentSong = remaining[index];
-		audio.src = "files/" + list + "/"
+		audio.src = "files/" + list + "-normal/"
 			+ removeSpaces(currentSong.name) + "-"
 			+ removeSpaces(currentSong.artist) + ".mp3";
 		audio.play();

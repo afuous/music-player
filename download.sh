@@ -31,7 +31,7 @@ main() {
 
 	curl -s "http://$thing.yt-downloader.org/download.php?id=$hash&d=$video" > "files/$list/$(nospaces "$songname")-$(nospaces "$songartist").mp3"
 
-	outjson="{name: $(quoted "$songname"), artist: $(quoted "$songartist"), url: $(quoted "$video"),},"
+	outjson="{$(quoted name): $(quoted "$songname"), $(quoted artist): $(quoted "$songartist"), $(quoted url): $(quoted "$video")},"
 	sed -i "s/]/\t${outjson}\n]/" "lists/$list.js"
 
 }
