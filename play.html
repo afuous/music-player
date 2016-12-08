@@ -1,4 +1,10 @@
-<body></body>
+<body>
+	<span id="text"></span>
+	<br />
+	<input type="range" id="speed" defaultValue="0" min="-100" max="100" step="1" />
+	<br />
+	<input type="button" id="normalSpeed" value="Normal Speed" />
+</body>
 <script>
 
 var list = prompt();
@@ -9,6 +15,18 @@ document.body.appendChild(script);
 script.onload = function() {
 
 	var audio = new Audio();
+	var textElem = document.getElementById("text");
+	var speedInput = document.getElementById("speed");
+
+	function updateSpeed() {
+		audio.playbackRate = Math.pow(2, speedInput.value / 100);
+	};
+	speedInput.onchange = updateSpeed;
+
+	document.getElementById("normalSpeed").onclick = function() {
+		speedInput.value = 0;
+		speedInput.onchange();
+	};
 
 	var remaining = [];
 
@@ -28,7 +46,8 @@ script.onload = function() {
 			+ removeSpaces(currentSong.name) + "-"
 			+ removeSpaces(currentSong.artist) + ".mp3";
 		audio.play();
-		document.body.innerHTML = currentSong.name + ", " + currentSong.artist;
+		updateSpeed();
+		textElem.innerHTML = currentSong.name + ", " + currentSong.artist;
 		remaining.splice(index, 1);
 	}
 
