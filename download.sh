@@ -19,7 +19,11 @@ main() {
 
 	youtube-dl -x --audio-format mp3 -o "$outfile" "https://www.youtube.com/watch?v=$video"
 
-	mp3gain -r "$outfile"
+	if which mp3gain > /dev/null 2> /dev/null; then
+		mp3gain -r "$outfile"
+	else
+		echo "mp3gain not found; skipping"
+	fi
 
 	outjson="{$(quoted name): $(quoted "$songname"), $(quoted artist): $(quoted "$songartist"), $(quoted url): $(quoted "$video")},"
 	sed -i "s/]/\t${outjson}\n]/" "lists/$list.js"
