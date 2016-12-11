@@ -15,25 +15,9 @@ main() {
 		error "List files not found. Please run makelist first or fix the files if you were messing with them."
 	fi
 
-	json=$(curl -s "https://d.yt-downloader.org/check.php?v=$video&f=mp3")
+	outfile="files/$list/$(nospaces "$songname")-$(nospaces "$songartist").webm"
 
-	hash=$(echo $json | jq -r ".hash")
-	sid=$(echo $json | jq -r ".sid")
-
-	if [ "$sid" == "null" ]; then
-		error "Error, perhaps the video does not exist"
-	fi
-
-	thing=$(echo "$stuff" | sed "${sid}q;d")
-
-	outfile="files/$list/$(nospaces "$songname")-$(nospaces "$songartist").mp3"
-
-	curl -s "http://$thing.yt-downloader.org/download.php?id=$hash&d=$video" > "$outfile"
-
-	if [[ $(du -sh "$outfile") == 0* ]]; then
-		rm "$outfile"
-		error "Video service sent no data; find a new video :/"
-	fi
+	youtube-dl -x --audio-format mp3 -o "$outfile" "https://www.youtube.com/watch?v=$video"
 
 	outjson="{$(quoted name): $(quoted "$songname"), $(quoted artist): $(quoted "$songartist"), $(quoted url): $(quoted "$video")},"
 	sed -i "s/]/\t${outjson}\n]/" "lists/$list.js"
@@ -52,39 +36,5 @@ nospaces() {
 quoted() {
 	echo '"'"$1"'"'
 }
-
-# https://www.youtube2mp3.cc/
-read -r -d '' stuff <<EOF
-gpkio
-agobe
-macsn
-hcqwb
-fgkzc
-hmqbu
-kyhxj
-nwwxj
-sbist
-ditrj
-qypbr
-trciw
-sjjec
-afyzk
-ocnuq
-qxqnh
-kzrzi
-obdzo
-umbbo
-aigkk
-qgxhg
-fkaph
-upajk
-xqqqh
-xrmrw
-fjhlv
-ejtbn
-urynq
-tjljs
-ywjkg
-EOF
 
 main "$@"
