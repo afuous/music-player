@@ -19,6 +19,8 @@ main() {
 
 	youtube-dl -x --audio-format mp3 -o "$outfile" "https://www.youtube.com/watch?v=$video"
 
+	mp3gain -r "$outfile"
+
 	outjson="{$(quoted name): $(quoted "$songname"), $(quoted artist): $(quoted "$songartist"), $(quoted url): $(quoted "$video")},"
 	sed -i "s/]/\t${outjson}\n]/" "lists/$list.js"
 
