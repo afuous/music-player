@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
 main() {
 
 	if [[ $# -lt 4 ]]; then
-		error "Usage: ./download.sh youtubeid list songname songartist"
+		error "Usage: ./download youtubeid list songname songartist"
 	fi
 
 	video="$1"
