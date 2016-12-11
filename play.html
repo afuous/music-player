@@ -1,95 +1,141 @@
-<body>
-	<table style="width: 100%; height: 100%;">
-		<tr>
-			<td align="center" valign="middle">
-				<span id="text"></span>
-				<br />
-				<input type="range" id="speed" defaultValue="0" min="-100" max="100" step="1" />
-				<br />
-				<input type="button" id="normalSpeed" value="Normal Speed" />
-			</td>
-		</tr>
-	</table>
-</body>
-<script>
-
-var list = prompt();
-
-var script = document.createElement("script");
-script.src = "lists/" + list + ".js";
-document.body.appendChild(script);
-script.onload = function() {
-
-	var audio = new Audio();
-	var textElem = document.getElementById("text");
-	var speedInput = document.getElementById("speed");
-
-	function updateSpeed() {
-		audio.playbackRate = Math.pow(2, speedInput.value / 100);
-	};
-	speedInput.onchange = updateSpeed;
-
-	document.getElementById("normalSpeed").onclick = function() {
-		speedInput.value = 0;
-		speedInput.onchange();
-	};
-
-	var remaining = [];
-
-	function removeSpaces(str) {
-		return str.replace(/\s+/g, "");
-	}
-
-	function next() {
-		if (remaining.length == 0) {
-			for (var i = 0; i < songs.length; i++) {
-				remaining.push(songs[i]);
+<html>	<head>
+		<title>Music Player</title>
+		<style type="text/css">
+			hr {
+				width: 600px;
 			}
-		}
-		var index = Math.floor(Math.random() * remaining.length);
-		var currentSong = remaining[index];
-		audio.src = "files/" + list + "/"
-			+ removeSpaces(currentSong.name) + "-"
-			+ removeSpaces(currentSong.artist) + ".mp3";
-		audio.play();
-		updateSpeed();
-		textElem.innerHTML = currentSong.name + ", " + currentSong.artist;
-		remaining.splice(index, 1);
-	}
+		</style>
+	</head>
+	<body>
+		<table style="width: 100%; height: 100%;">
+			<tr>
+				<td align="center" valign="middle">
 
-	var volumeChange = 0.01;
-	audio.volume = 0.2;
-	next();
+					<hr /><br />
 
-	audio.onended = next;
+					<span id="text"></span>
 
-	window.onkeydown = function(event) {
-		var key = (event || window.event).keyCode;
-		if (key == 32) {
-			if (audio.paused) {
+					<br /><br /><hr /><br />
+
+					<span id="status" ></span>
+					<br>
+					<input type="button" id="switchStatusButton" style="margin-top: 5px;"/>
+
+					<br /><br /><hr /><br />
+
+					<input type="button" id="nextButton" value="Next (P)" />
+
+					<br /><br /><hr /><br />
+
+					Volume
+					<br />
+					<input type="range" id="volumeRange" value="20" min="0" max="100" step="1" />
+
+					<br /><br /><hr /><br />
+
+					Speed
+					<br />
+					<input type="range" id="speedRange" value="0" min="-100" max="100" step="1" />
+					<br />
+					<input type="button" id="normalSpeedButton" value="Normal Speed" />
+
+					<br /><br /><hr />
+
+				</td>
+			</tr>
+		</table>
+		<script>
+
+		var list = prompt();
+
+		var script = document.createElement("script");
+		script.src = "lists/" + list + ".js";
+		document.body.appendChild(script);
+		script.onload = function() {
+
+			var audio = new Audio();
+			var textElem = document.getElementById("text");
+			var statusElem = document.getElementById("status");
+			var speedInput = document.getElementById("speedRange");
+			var volumeInput = document.getElementById("volumeRange");
+			var nextButton = document.getElementById("nextButton");
+			var normalSpeedButton = document.getElementById("normalSpeedButton");
+			var switchStatusButton = document.getElementById("switchStatusButton");
+
+			function updateSpeed() {
+				audio.playbackRate = Math.pow(2, speedInput.value / 100);
+			};
+			speedInput.onchange = updateSpeed;
+
+			normalSpeedButton.onclick = function() {
+				speedInput.value = 0;
+				speedInput.onchange();
+			};
+
+			volumeInput.onchange = function() {
+				audio.volume = volumeInput.value / 100;
+			};
+			volumeInput.onchange();
+
+			function play() {
 				audio.play();
+				statusElem.innerHTML = "Playing";
+				switchStatusButton.value = "Pause (Space)";
 			}
-			else {
+
+			function pause() {
 				audio.pause();
+				statusElem.innerHTML = "Paused";
+				switchStatusButton.value = "Play (Space)";
 			}
-		}
-		else if (key == 38) {
-			audio.volume += volumeChange;
-			if (audio.volume > 1) {
-				audio.volume = 1;
+
+			function togglePlaying() {
+				if (audio.paused) {
+					play();
+				} else {
+					pause();
+				}
 			}
-		}
-		else if (key == 40) {
-			audio.volume -= volumeChange;
-			if (audio.volume < 0) {
-				audio.volume = 0;
+			switchStatusButton.onclick = togglePlaying;
+
+			var remaining = [];
+
+			function removeSpaces(str) {
+				return str.replace(/\s+/g, "");
 			}
-		}
-		else if (key == 80) { //p
+
+			function next() {
+				if (remaining.length == 0) {
+					for (var i = 0; i < songs.length; i++) {
+						remaining.push(songs[i]);
+					}
+				}
+				var index = Math.floor(Math.random() * remaining.length);
+				var currentSong = remaining[index];
+				audio.src = "files/" + list + "/"
+					+ removeSpaces(currentSong.name) + "-"
+					+ removeSpaces(currentSong.artist) + ".mp3";
+				play();
+				updateSpeed();
+				textElem.innerHTML = currentSong.name + ", " + currentSong.artist;
+				remaining.splice(index, 1);
+			}
+
 			next();
+			audio.onended = next;
+			nextButton.onclick = next;
+
+			window.onkeydown = function(event) {
+				var key = (event || window.event).keyCode;
+				if (key == 32) {
+					togglePlaying();
+				} else if (key == 80) { // p
+					next();
+				}
+			};
+
 		}
-	};
 
-}
-
-</script>
+		</script>
+	</body>
+</html>
