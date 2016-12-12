@@ -78,6 +78,9 @@
 			next();
 			audio.onended = next;
 			nextButton.onclick = next;
+			nextButton.onfocus = function() {
+				nextButton.blur();
+			};
 
 			window.onkeydown = function(event) {
 				var key = (event || window.event).keyCode;
