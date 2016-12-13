@@ -15,12 +15,12 @@ main() {
 		error "List files not found. Please run makelist first or fix the files if you were messing with them."
 	fi
 
-	outfile="files/$list/$(nospaces "$songname")-$(nospaces "$songartist").webm"
+	outfile="files/$list/$(nospaces "$songname")-$(nospaces "$songartist")"
 
-	youtube-dl -x --audio-format mp3 -o "$outfile" "https://www.youtube.com/watch?v=$video"
+	youtube-dl -x --audio-format mp3 -o "${outfile}.webm" "https://www.youtube.com/watch?v=$video"
 
 	if which mp3gain > /dev/null 2> /dev/null; then
-		mp3gain -r "$outfile"
+		mp3gain -r "${outfile}.mp3"
 	else
 		echo "mp3gain not found; skipping"
 	fi
