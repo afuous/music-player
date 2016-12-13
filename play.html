@@ -15,7 +15,19 @@
 
 					<br /><br /><br />
 
-					<input type="button" id="nextButton" value="Next (P)" />
+					<table cellpadding="10px">
+						<tr>
+							<td>
+								<input type="button" id="nextButton" value="Next (N)" />
+							</td>
+							<td>
+								<label>
+									<input type="checkbox" id="loopCheckbox" />
+									Loop Current Song (L)
+								</label>
+							</td>
+						</tr>
+					</table>
 
 					<br /><br /><br /><br />
 
@@ -41,6 +53,7 @@
 			var volumeInput = document.getElementById("volumeRange");
 			var nextButton = document.getElementById("nextButton");
 			var normalSpeedButton = document.getElementById("normalSpeedButton");
+			var loopCheckbox = document.getElementById("loopCheckbox");
 
 			function updateSpeed() {
 				audio.playbackRate = Math.pow(2, speedInput.value / 100);
@@ -59,6 +72,10 @@
 			}
 
 			function next() {
+				if (loopCheckbox.checked) {
+					audio.play();
+					return;
+				}
 				if (remaining.length == 0) {
 					for (var i = 0; i < songs.length; i++) {
 						remaining.push(songs[i]);
@@ -84,14 +101,16 @@
 
 			window.onkeydown = function(event) {
 				var key = (event || window.event).keyCode;
-				if (key == 32) {
+				if (key == " ".charCodeAt()) {
 					if (audio.paused) {
 						audio.play();
 					} else {
 						audio.pause();
 					}
-				} else if (key == 80) { // p
+				} else if (key == "N".charCodeAt()) {
 					next();
+				} else if (key == "L".charCodeAt()) {
+					loopCheckbox.checked = !loopCheckbox.checked;
 				}
 			};
 
