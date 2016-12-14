@@ -1,13 +1,19 @@
 <html>
 	<head>
 		<title>Music Player</title>
+		<style type="text/css">
+			a {
+				color: #0000ee;
+				text-decoration: none;
+			}
+		</style>
 	</head>
 	<body>
 		<table style="width: 100%; height: 100%;">
 			<tr>
 				<td align="center" valign="middle">
 
-					<span id="text"></span>
+					<a target="_blank" id="text"></a>
 
 					<br /><br /><br />
 
@@ -48,7 +54,7 @@
 		script.onload = function() {
 
 			var audio = document.getElementById("audio");
-			var textElem = document.getElementById("text");
+			var textLink = document.getElementById("text");
 			var speedInput = document.getElementById("speedRange");
 			var volumeInput = document.getElementById("volumeRange");
 			var nextButton = document.getElementById("nextButton");
@@ -88,7 +94,8 @@
 					+ removeSpaces(currentSong.artist) + ".mp3";
 				audio.play();
 				updateSpeed();
-				textElem.innerHTML = currentSong.name + ", " + currentSong.artist;
+				textLink.innerHTML = currentSong.name + " | " + currentSong.artist;
+				textLink.href = "https://www.youtube.com/watch?v=" + currentSong.url;
 				remaining.splice(index, 1);
 			}
 
